@@ -62,8 +62,8 @@ module.exports = function apptomaApp(name, _key, _appUrl) {
 
     // fix the conversion between + and ' ' that happens when passing stuff through an url
     var authFixed = auth.replace(/ /g, '+');
-    var authDecoded = new Buffer(authFixed, 'base64').toString();
-    incoming = decryptAppData(authDecoded, iv);
+    var authDecoded = new Buffer(authFixed, 'base64');
+    var incoming = decryptAppData(authDecoded, iv);
 
     if (incoming == null)
       return false;
@@ -123,9 +123,8 @@ module.exports = function apptomaApp(name, _key, _appUrl) {
     td.open(cutKey(td, key), iv);
 
     /* Decrypt data */
-    var decrypted = td.decrypt(new Buffer(data));
-
-    return JSON.parse(decrypted.toString().trim());
+    var decrypted = td.decrypt(data).toString().replace(/\x00/g, '');
+    return JSON.parse(decrypted);
   }
 
   /**
@@ -142,7 +141,7 @@ module.exports = function apptomaApp(name, _key, _appUrl) {
     var iv = ivSha1.slice(0, td.getIvSize());
 
     /* Intialize encryption */
-    td.open(cutKey(td, _key), iv);
+    td.open(cutKey(td, key), iv);
     
     /* Encrypt data */
     var encrypted = td.encrypt(JSON.stringify(data));
@@ -158,7 +157,8 @@ module.exports = function apptomaApp(name, _key, _appUrl) {
    */
   function cutKey(td, key) {
     var keySha1 = crypto.createHash('sha1').update(key).digest('hex');
-    return keySha1.slice(0, td.getKeySize());
+    var keyHex = keySha1.slice(0, td.getKeySize());
+    return new Buffer(keyHex);
   }
 
   /**
