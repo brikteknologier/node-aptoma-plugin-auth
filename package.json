@@ -1,12 +1,12 @@
 {
-  "name": "node-aptoma-api",
+  "name": "node-aptoma-plugin-auth",
   "version": "0.0.0",
-  "description": "Node version of no.aptoma.plugin-api",
-  "main": "index.js",
+  "description": "Node version of no.aptoma.plugin-api's example auth module.",
+  "main": "auth.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "author": "Helge S. Holm <helge.holm@gmail.com>",
+  "author": "Helge S. Holm <helge.holm@brik.no>",
   "license": "MIT",
   "dependencies": {
     "express": "^4.9.4",
