@@ -1,9 +1,13 @@
 # node-aptoma-plugin-auth
 
-This is a NodeJS adaptation of the Aptoma Plugin API's auth module,
+This is a NodeJS adaptation of the
+[Aptoma Plugin API](https://github.com/aptoma/no.aptoma.plugin-api)'s auth module,
 originally implemented in PHP.
 
-It is exposed as an `express` compatible request handler.
+It is exposed as an `express` compatible request handler.  The
+intention is that you attach it to any endpoint you wish.
+
+For more details, see the original module.
 
 ## Example usage
 

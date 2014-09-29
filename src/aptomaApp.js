@@ -1,27 +1,6 @@
 /**
- * This file provides a class for making authentication
- * with the AptomaApp API a breeze:
- *
- * To use it, create a new object representing your app:
- * <code>$app = new AptomaApp('my-app', 'superfish', 'http://myhost.com:80');</code>
- *
- * Now, to check that incoming token from DrPublish is valid
- * (which you should check!), do:
- * <code>$dpdata = $app->validate($_GET['auth'], $_GET['iv']);</code>
- *
- * If $dpdata === false, then the validation failed
- * Otherwise, $dpdata is an object containing information
- * about the DrPublish session (@see AptomaApp.validate)
- *
- * Now, to get the token to return to DrPublish to authenticate, do:
- * <code>$token = $app->getAuthenticationToken();</code>
- *
- * $token will now contain two indices, 'signature' and 'iv'.
- * Both have to be sent to DrPublish for successful authentication!
- *
- * If you think you have found a bug, please report it on
- * the issue tracker here:
- * https://github.com/aptoma/no.aptoma.app-api
+ * Manually translated from PHP:
+ * https://github.com/aptoma/no.aptoma.plugin-api/blob/master/php/auth.php
  */
 
 var crypto = require('crypto');
@@ -119,10 +98,10 @@ module.exports = function apptomaApp(name, _key, _appUrl) {
 
     var td = new mcrypt.MCrypt('rijndael-128', 'cbc');
 
-    /* Intialize encryption */
+    // Intialize encryption
     td.open(cutKey(td, key), iv);
 
-    /* Decrypt data */
+    // Decrypt data
     var decrypted = td.decrypt(data).toString().replace(/\x00/g, '');
     return JSON.parse(decrypted);
   }
@@ -135,15 +114,15 @@ module.exports = function apptomaApp(name, _key, _appUrl) {
   function encryptAppData(data) {
     var td = new mcrypt.MCrypt('rijndael-128', 'cbc');
     
-    /* Create the IV and determine the keysize length*/
+    // Create the IV and determine the keysize length
     var ivRaw = td.generateIv();
     var ivSha1 = crypto.createHash('sha1').update(ivRaw).digest('hex');
     var iv = ivSha1.slice(0, td.getIvSize());
 
-    /* Intialize encryption */
+    // Intialize encryption
     td.open(cutKey(td, key), iv);
     
-    /* Encrypt data */
+    // Encrypt data
     var encrypted = td.encrypt(JSON.stringify(data));
 
     return {
