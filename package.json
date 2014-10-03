@@ -6,7 +6,6 @@
   "author": "Helge S. Holm <helge.holm@brik.no>",
   "license": "MIT",
   "dependencies": {
-    "express": "^4.9.4",
     "mcrypt": "0.0.7"
   }
 }
