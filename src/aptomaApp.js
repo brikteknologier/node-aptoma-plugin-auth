@@ -93,9 +93,8 @@ module.exports = function apptomaApp(name, _key, _appUrl, test) {
         'salt': getSalt(128) }
     );
 
-    var base64Data = new Buffer(outgoing.data).toString('base64');
     return {
-      'signature': base64Data,
+      'signature': outgoing.data,
       'iv': outgoing.iv
     };
   }
@@ -129,22 +128,28 @@ module.exports = function apptomaApp(name, _key, _appUrl, test) {
   /**
    * Encrypts a JSON representation of the given data
    * using the given key, and returns both the encrypted
-   * data and the used IV
+   * data (base64-encoded) and the used IV
    */
   function encryptAppData(data) {
     // Create the IV
     var iv = crypto.randomBytes(8).toString('hex');
 
-    // Initialize encryption
-    var td = new mcrypt.MCrypt('rijndael-128', 'cbc');
-    td.open(keyBuf, iv);
+    // Intialize encryption
+    var cipher = crypto.createCipheriv('AES-256-CBC', keyBuf, new Buffer(iv));
+    cipher.setAutoPadding(false);
+
+    // Prepare data
+    var plainText = new Buffer(JSON.stringify(data));
 
     // Encrypt data
-    var encrypted = td.encrypt(JSON.stringify(data));
+    var encrypted = cipher.update(plainText, null, 'binary');
+    for (var i = plainText.length % 16; i < 16; i++)
+      encrypted += cipher.update('\0', 'binary', 'binary');
+    encrypted += cipher.final('binary');
 
     return {
       iv: iv,
-      data: encrypted
+      data: new Buffer(encrypted, 'binary').toString('base64')
     };
   }
 
