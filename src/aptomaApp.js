@@ -5,7 +5,6 @@
 
 var crypto = require('crypto');
 var url = require('url');
-var mcrypt = require('mcrypt');
 
 /**
  * Parameters:
