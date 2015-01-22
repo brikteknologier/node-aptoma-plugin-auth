@@ -12,8 +12,10 @@ var mcrypt = require('mcrypt');
  * name    - The app's name as defined in DrPublish.
  * _key    - The API key for this app.
  * _appUrl - The scheme, host and port of the app. Port defaults to 80.
+ * test    - Intentionally undocumented test config object.
  */
-module.exports = function apptomaApp(name, _key, _appUrl) {
+module.exports = function apptomaApp(name, _key, _appUrl, test) {
+  test = test || {};
   var key = determineKey();
 
   function determineKey() {
@@ -47,10 +49,12 @@ module.exports = function apptomaApp(name, _key, _appUrl) {
     if (incoming == null)
       return false;
 
-    // Make sure we're not being replayed
-    var timeNow = Math.floor(Date.now() / 1000);
-    if (incoming.time == null || timeNow - incoming.time > 60)
-      return false;
+    if (!test.allowReplayAttacks) {
+      // Make sure we're not being replayed
+      var timeNow = Math.floor(Date.now() / 1000);
+      if (incoming.time == null || timeNow - incoming.time > 60)
+        return false;
+  }
 
     // Make sure the auth is for the correct app
     if (incoming.app == null || incoming.app != name)
