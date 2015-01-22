@@ -67,4 +67,23 @@ describe("node-aptoma-auth", function() {
     assert(token.signature);
     assert(token.iv);
   });
+
+  it("returns a valid token object", function() {
+    var token = app.getAuthenticationToken();
+    var td = new mcrypt.MCrypt('rijndael-128', 'cbc');
+    var key = (function() {
+      var keyBase = APPKEY + 'http://drpubapp.brik.no:80';
+      var keySha1 = crypto.createHash('sha1').update(keyBase).digest('hex');
+      var keyHex = keySha1.slice(0, td.getKeySize());
+      return new Buffer(keyHex);
+    })();
+    td.open(key, token.iv);
+    var cipherText = new Buffer(token.signature, 'base64');
+    var decrypted = td.decrypt(cipherText).toString().replace(/\x00/g, '');
+    assert(decrypted);
+    var tokenObject = JSON.parse(decrypted);
+    assert.equal(tokenObject.app, 'brik-video-test');
+    assert(tokenObject.time);
+    assert(tokenObject.salt);
+  });
 });
