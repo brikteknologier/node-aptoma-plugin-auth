@@ -19,7 +19,7 @@ describe("node-aptoma-auth", function() {
     assert(app);
   });
 
-  it("can be asked to validate an auth request", function() {
+  it("can be asked to validate a valid auth request", function() {
     app.validate(AUTH, IV);
   });
 });
