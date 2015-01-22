@@ -45,4 +45,16 @@ describe("node-aptoma-auth", function() {
   it("validates a valid auth request", function() {
     assert(app.validate(AUTH, IV));
   });
+
+  it("decodes a valid auth request correctly", function() {
+    var expected = {
+      drpublish: 'http://hivolda.drpublish.aptoma.no:80/drpublish/ajax.php?do=get-signed-app-source&app=brik-video-test',
+      time: 1421916536,
+      app: 'brik-video-test',
+      user: 'helge.holm@brik.no',
+      publication: '2'
+    };
+    var actual = app.validate(AUTH, IV);
+    assert.deepEqual(actual, expected);
+  });
 });
