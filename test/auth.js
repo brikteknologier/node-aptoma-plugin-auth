@@ -10,7 +10,8 @@ describe("node-aptoma-auth", function() {
     app = appInit(
       'brik-video-test',
       'DrPublish',
-      'http://drpubapp.brik.no/auth'
+      'http://drpubapp.brik.no/auth',
+      { allowReplayAttacks: "Sure thing!" }
     );
   });
 
