@@ -23,17 +23,6 @@ app.get('/auth', auth(
 app.listen(8080);
 ```
 
-## Prerequisites
-
-The `mcrypt` library is used for encryption and decryption, and must
-be installed for this module to work.
-
-Example install command for Ubuntu:
-
-```
-apt-get install libmcrypt4 libmcrypt-dev
-```
-
 ## Documentation
 
 The module `node-aptoma-plugin-auth` provides an initializer
