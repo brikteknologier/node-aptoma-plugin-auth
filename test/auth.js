@@ -57,4 +57,11 @@ describe("node-aptoma-auth", function() {
     var actual = app.validate(AUTH, IV);
     assert.deepEqual(actual, expected);
   });
+
+  it("can return a token object with a signature and IV", function() {
+    var token = app.getAuthenticationToken();
+    assert(token);
+    assert(token.signature);
+    assert(token.iv);
+  });
 });
