@@ -135,7 +135,7 @@ module.exports = function apptomaApp(name, _key, _appUrl, test) {
     var iv = crypto.randomBytes(8).toString('hex');
 
     // Intialize encryption
-    var cipher = crypto.createCipheriv('AES-256-CBC', keyBuf, new Buffer(iv));
+    var cipher = crypto.createCipheriv('AES-256-CBC', keyBuf, iv);
     cipher.setAutoPadding(false);
 
     // Prepare data
