@@ -22,4 +22,27 @@ describe("node-aptoma-auth", function() {
   it("can be asked to validate a valid auth request", function() {
     app.validate(AUTH, IV);
   });
+
+  it("does not validate a replay attack", function() {
+    var strictApp = appInit(
+      'brik-video-test',
+      'DrPublish',
+      'http://drpubapp.brik.no/auth'
+    );
+    assert(!strictApp.validate(AUTH, IV));
+  });
+
+  it("does not validate given an incorrect key", function() {
+    var wrongKeyApp = appInit(
+      'brik-video-test',
+      'PublishMD',
+      'http://drpubapp.brik.no/auth',
+      { allowReplayAttacks: "Sure, why not." }
+    );
+    assert(!wrongKeyApp.validate(AUTH, IV));
+  });
+
+  it("validates a valid auth request", function() {
+    assert(app.validate(AUTH, IV));
+  });
 });
