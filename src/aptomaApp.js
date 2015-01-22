@@ -17,11 +17,21 @@ var mcrypt = require('mcrypt');
 module.exports = function apptomaApp(name, _key, _appUrl, test) {
   test = test || {};
   var key = determineKey();
+  var keyBuf = cutKeyBuffer(key);
 
   function determineKey() {
     var appUrl = url.parse(_appUrl, false, true);
     var port = appUrl.port || 80;
     return _key + appUrl.protocol + '//' + appUrl.hostname + ':' + port;
+  }
+
+  /**
+   * Makes the a key a certain length
+   */
+  function cutKeyBuffer(key) {
+    var keySha1 = crypto.createHash('sha1').update(key).digest('hex');
+    var keyHex = keySha1.slice(0, 32);
+    return new Buffer(keyHex);
   }
 
   /**
@@ -103,7 +113,7 @@ module.exports = function apptomaApp(name, _key, _appUrl, test) {
     var td = new mcrypt.MCrypt('rijndael-128', 'cbc');
 
     // Intialize encryption
-    td.open(cutKey(td, key), iv);
+    td.open(keyBuf, iv);
 
     // Decrypt data
     var decrypted = td.decrypt(data).toString().replace(/\x00/g, '');
@@ -127,7 +137,7 @@ module.exports = function apptomaApp(name, _key, _appUrl, test) {
 
     // Initialize encryption
     var td = new mcrypt.MCrypt('rijndael-128', 'cbc');
-    td.open(cutKey(td, key), iv);
+    td.open(keyBuf, iv);
 
     // Encrypt data
     var encrypted = td.encrypt(JSON.stringify(data));
@@ -136,15 +146,6 @@ module.exports = function apptomaApp(name, _key, _appUrl, test) {
       iv: iv,
       data: encrypted
     };
-  }
-
-  /**
-   * Makes the a key a certain length
-   */
-  function cutKey(td, key) {
-    var keySha1 = crypto.createHash('sha1').update(key).digest('hex');
-    var keyHex = keySha1.slice(0, td.getKeySize());
-    return new Buffer(keyHex);
   }
 
   /**
