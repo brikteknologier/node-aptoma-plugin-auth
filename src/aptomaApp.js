@@ -104,18 +104,15 @@ module.exports = function apptomaApp(name, _key, _appUrl, test) {
    * Expects the result to be a valid JSON block
    */
   function decryptAppData(data, iv) {
-    if (!~mcrypt.getAlgorithmNames().indexOf('rijndael-128'))
-      throw new Error('MCrypt algorithm "rijndael-128" not found.')
-    if (!~mcrypt.getModeNames().indexOf('cbc'))
-      throw new Error('MCrypt mode "cbc" not found.')
-
-    var td = new mcrypt.MCrypt('rijndael-128', 'cbc');
-
     // Intialize encryption
-    td.open(keyBuf, iv);
+    var decipher = crypto.createDecipheriv('AES-256-CBC', keyBuf, iv);
+    decipher.setAutoPadding(false);
 
     // Decrypt data
-    var decrypted = td.decrypt(data).toString().replace(/\x00/g, '');
+    var decrypted = decipher.update(data);
+    decrypted += decipher.final();
+    decrypted = decrypted.toString().replace(/\x00/g, '');
+
     try {
       return JSON.parse(decrypted);
     } catch(_) {
