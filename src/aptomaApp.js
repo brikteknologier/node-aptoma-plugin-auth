@@ -103,7 +103,13 @@ module.exports = function apptomaApp(name, _key, _appUrl) {
 
     // Decrypt data
     var decrypted = td.decrypt(data).toString().replace(/\x00/g, '');
-    return JSON.parse(decrypted);
+    try {
+      return JSON.parse(decrypted);
+    } catch(_) {
+      // Bad key, bad data or bad IV will result in random garbage,
+      // which causes a SyntaxError when trying to parse it as JSON.
+      return null;
+    }
   }
 
   /**
