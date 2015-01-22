@@ -122,16 +122,13 @@ module.exports = function apptomaApp(name, _key, _appUrl, test) {
    * data and the used IV
    */
   function encryptAppData(data) {
-    var td = new mcrypt.MCrypt('rijndael-128', 'cbc');
-    
-    // Create the IV and determine the keysize length
-    var ivRaw = td.generateIv();
-    var ivSha1 = crypto.createHash('sha1').update(ivRaw).digest('hex');
-    var iv = ivSha1.slice(0, td.getIvSize());
+    // Create the IV
+    var iv = crypto.randomBytes(8).toString('hex');
 
-    // Intialize encryption
+    // Initialize encryption
+    var td = new mcrypt.MCrypt('rijndael-128', 'cbc');
     td.open(cutKey(td, key), iv);
-    
+
     // Encrypt data
     var encrypted = td.encrypt(JSON.stringify(data));
 
