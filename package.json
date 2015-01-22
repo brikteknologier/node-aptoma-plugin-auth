@@ -3,9 +3,15 @@
   "version": "1.1.0",
   "description": "Node version of no.aptoma.plugin-api's example auth module.",
   "main": "auth.js",
+  "scripts": {
+    "test": "./node_modules/mocha/bin/mocha -R spec"
+  },
   "author": "Helge S. Holm <helge.holm@brik.no>",
   "license": "MIT",
   "dependencies": {
     "mcrypt": "0.0.7"
+  },
+  "devDependencies": {
+    "mocha": "^2.1.0"
   }
 }
