@@ -1,6 +1,11 @@
 /**
  * Manually translated from PHP:
  * https://github.com/aptoma/no.aptoma.plugin-api/blob/master/php/auth.php
+ *
+ * The original PHP version's encryption was based on Rijndael-128 CBC
+ * via MCrypt.  This has for convenience been replaced with the
+ * compatible AES-256 CBC from OpenSSL, which is bundled with NodeJS
+ * and thus avoids an extra dependency.
  */
 
 var crypto = require('crypto');
